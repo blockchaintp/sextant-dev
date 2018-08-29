@@ -1,0 +1,36 @@
+version: '3'
+services:
+  router:
+    image: binocarlos/noxy
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - frontend
+    environment:
+      - NOXY_DEFAULT_HOST=frontend
+      - NOXY_DEFAULT_PORT=1234
+      - NOXY_API_FRONT=/api/v1
+      - NOXY_API_HOST=api
+  frontend:
+    build:
+      context: ../sextant
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - NODE_ENV=development
+      - MANUALRUN
+    volumes:
+      - ../sextant/src:/app/frontend/src
+      - ../sextant/.cache:/app/frontend/.cache
+      - ../sextant/dist:/app/frontend/dist
+  api:
+    build:
+      context: ../sextant-api
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - MANUALRUN
+    volumes:
+      - ../sextant-api/src:/app/api/src
