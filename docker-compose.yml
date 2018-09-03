@@ -32,5 +32,7 @@ services:
     environment:
       - NODE_ENV=development
       - MANUALRUN
+      - SEXTANT_FILE_STORE_FOLDER=/filestore-data
     volumes:
       - ../sextant-api/src:/app/api/src
+      - ./.data/filestore-data:/filestore-data
