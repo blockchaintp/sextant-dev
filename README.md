@@ -25,6 +25,19 @@ git clone git@github.com:catenasys/sextant-api.git
 
 ## running locally
 
+#### AWS credentials
+
+You will need a `credentials.env` file inside the `sextant-dev` folder that has the following variables:
+
+```
+AWS_ACCESS_KEY_ID=XXX
+AWS_SECRET_ACCESS_KEY=XXX
+```
+
+These credentials will be used by the api container when connecting to AWS.
+
+#### boot stack
+
 From within the `sextant-dev` folder:
 
 ```bash
@@ -39,7 +52,7 @@ Then you can view the app in your browser:
 open http://localhost
 ```
 
-## running locally with manual restarts
+#### running locally with manual restarts
 
 Sometimes - it's useful to have a command line inside the api & frontend containers for quick restarts.
 
@@ -57,7 +70,7 @@ Then - in two seperate terminals you can manually start the frontend and api:
 
 ```bash
 make frontend.cli
-yarn run watch
+yarn run develop
 ```
 
 **api:**
