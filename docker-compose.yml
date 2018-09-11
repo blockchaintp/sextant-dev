@@ -12,6 +12,8 @@ services:
       - NOXY_DEFAULT_PORT=8080
       - NOXY_API_FRONT=/api/v1
       - NOXY_API_HOST=api
+      - NOXY_PROXY_FRONT=/proxy
+      - NOXY_PROXY_HOST=api
   frontend:
     build:
       context: ../sextant
