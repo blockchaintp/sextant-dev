@@ -14,6 +14,7 @@ Then - clone the following repos in the same folder as this repo:
  * [sextant](https://github.com/catenasys/sextant)
  * [sextant-api](https://github.com/catenasys/sextant-api)
 
+PLEASE NOTE: If you are running this under WSL with Docker-Win the folder needs to be addressable from windows under the same basic name, and the drive needs to be shared to Docker-Win
 
 For example:
 
