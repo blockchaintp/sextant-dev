@@ -46,6 +46,8 @@ services:
         METERING_MODULE: ecs.js
     env_file: credentials.env
     entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else yarn run start; fi'
+    depends_on:
+      - postgres
     environment:
       - NODE_ENV=development
       - MANUALRUN

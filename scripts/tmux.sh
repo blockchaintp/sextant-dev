@@ -29,7 +29,7 @@ function start() {
   tmux split-window -v -d
 
   tmux send-keys -t 0 'make frontend.run' C-m
-  tmux send-keys -t 1 'make api.run' C-m
+  tmux send-keys -t 1 'sleep 5 && make api.run' C-m
   
   tmux -2 attach-session -t $SESSION
 }
