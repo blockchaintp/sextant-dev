@@ -12,6 +12,7 @@ services:
     environment:
       - NOXY_DEFAULT_HOST=frontend
       - NOXY_DEFAULT_PORT=8080
+      - NOXY_DEFAULT_WS=1
       - NOXY_API_FRONT=/api/v1
       - NOXY_API_HOST=api
       - NOXY_PROXY_FRONT=/proxy
