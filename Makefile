@@ -20,7 +20,7 @@ api.cli:
 
 .PHONY: api.run
 api.run:
-	docker-compose exec api yarn run start
+	docker-compose exec api yarn run serve
 
 .PHONY: psql
 psql:
