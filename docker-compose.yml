@@ -1,4 +1,6 @@
 version: '3'
+volumes:
+  postgres-data:
 services:
   router:
     image: binocarlos/noxy
@@ -10,16 +12,28 @@ services:
     environment:
       - NOXY_DEFAULT_HOST=frontend
       - NOXY_DEFAULT_PORT=8080
+      - NOXY_DEFAULT_WS=1
       - NOXY_API_FRONT=/api/v1
       - NOXY_API_HOST=api
       - NOXY_PROXY_FRONT=/proxy
       - NOXY_PROXY_HOST=api
+  postgres:
+    image: postgres:9.6.1
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
   frontend:
     build:
       context: ../sextant
       dockerfile: Dockerfile
     ports:
       - 8080:8080
+    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else yarn run develop; fi'
     environment:
       - NODE_ENV=development
       - MANUALRUN
@@ -34,11 +48,20 @@ services:
       args:
         METERING_MODULE: ecs.js
     env_file: credentials.env
+    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else yarn run start; fi'
+    depends_on:
+      - postgres
     environment:
       - NODE_ENV=development
       - MANUALRUN
-      - SEXTANT_MANUAL_INIT=1
-      - SEXTANT_FILE_STORE_FOLDER=/filestore-data
+      - POSTGRES_SERVICE_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - SESSION_SECRET=sextant
+      - TOKEN_SECRET=sextant
+      - LOGGING=1
     volumes:
       - ../sextant-api/src:/app/api/src
-      - ./.data/filestore-data:/filestore-data
+      - ../sextant-api/test:/app/api/test
+      - ../sextant-api/migrations:/app/api/migrations

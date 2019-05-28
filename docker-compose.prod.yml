@@ -1,4 +1,14 @@
+# the following variables MUST be present in the environment
+#
+#  * POSTGRES_USER
+#  * POSTGRES_DB
+#  * POSTGRES_PASSWORD
+#  * SESSION_SECRET
+#  * TOKEN_SECRET
+#
 version: '3'
+volumes:
+  postgres-data:
 networks:
   sextant:
 services:
@@ -14,22 +24,34 @@ services:
       - NOXY_DEFAULT_PORT=80
       - NOXY_API_FRONT=/api/v1
       - NOXY_API_HOST=api
-      - NOXY_PROXY_FRONT=/proxy
-      - NOXY_PROXY_HOST=api
     networks:
      - sextant
+  postgres:
+    image: postgres:9.6.1
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+     - sextant
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
   frontend:
     image: blockchaintp/sextant:master
-    environment:
-      - NODE_ENV=production
     networks:
      - sextant
+    environment:
+      - NODE_ENV=production
   api:
     image: blockchaintp/sextant-api:master
-    environment:
-      - NODE_ENV=production
-      - SEXTANT_FILE_STORE_FOLDER=/filestore-data
-    volumes:
-      - ./.data/filestore-data:/filestore-data
     networks:
      - sextant
+    environment:
+      - NODE_ENV=production
+      - LOGGING=1
+      - POSTGRES_SERVICE_HOST=postgres
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
+      - SESSION_SECRET
+      - TOKEN_SECRET
