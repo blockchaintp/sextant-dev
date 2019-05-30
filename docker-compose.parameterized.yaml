@@ -13,7 +13,7 @@ networks:
   sextant:
 services:
   router:
-    image: dev.catenasys.com:8083/blockchaintp/noxy:BTP2.0.0
+    image: ${DOCKER_REGISTRY}/blockchaintp/noxy:${BTP_VERSION}
     ports:
       - 80:80
     depends_on:
@@ -37,13 +37,13 @@ services:
       - POSTGRES_DB
       - POSTGRES_PASSWORD
   frontend:
-    image: dev.catenasys.com:8083/blockchaintp/sextant:BTP2.0.0
+    image: ${DOCKER_REGISTRY}/blockchaintp/sextant:${BTP_VERSION}
     networks:
       - sextant
     environment:
       - NODE_ENV=production
   api:
-    image: dev.catenasys.com:8083/blockchaintp/sextant-api:BTP2.0.0
+    image: ${DOCKER_REGISTRY}/blockchaintp/sextant-api:${BTP_VERSION}
     networks:
       - sextant
     environment:
