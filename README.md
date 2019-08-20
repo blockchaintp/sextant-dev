@@ -11,6 +11,9 @@ Install:
 
  * [docker](https://docs.docker.com/install/)
  * [docker-compose](https://docs.docker.com/compose/install/)
+ * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
+You should also activate a local install of Kubernetes. Use the version of `docker` that you have installed and follow this [instruction](https://rominirani.com/tutorial-getting-started-with-kubernetes-with-docker-on-mac-7f58467203fd) to verify that it works.
 
 Clone the following repos under the same root folder:
 
@@ -45,14 +48,17 @@ AWS_ACCESS_KEY_ID=XXX
 AWS_SECRET_ACCESS_KEY=XXX
 ```
 
-These credentials will be used by the api container when connecting to AWS.
+You will need to set it in a profile (e.g. in `.bashrc` or `.bash_profile` or using `direnv`) that is independent of terminal session. 
+
+These credentials will be used by the api container when connecting to AWS in instances where you need to connect to BTP AWS kubernetes instance.
 
 #### STEP 2 - Build executable artefacts
 
 From within the `sextant-dev` folder:
 
-STEP 2.1: Set environmental variable `MANUALRUN` to 1
-STEP 2.2: Run the command `make dev`
+STEP 2.1: Open a shell terminal
+STEP 2.2: Set the enviroment variable `export MANUALRUN=1`
+STEP 2.3: Run the command `make dev`
 
 For example, open one bash terminal and run the following sequence of commands:
 
@@ -69,41 +75,48 @@ All Sextant artefacts run from within docker containers. To start and stop sexta
 
 You should consult docker documentation to ensure that you find execution sequence appropriate for your needs.
 
-The following is an example where you wish to ensure a **comnpletely** clean state with no containers and images in your system. 
+The following is an example where you wish to ensure a **comnpletely** clean state with no containers, images and postgress db in your system. **NOTE:** This is a highly destructive action.
 
 ```bash
 docker rm -f $(docker ps -a)
 docker rmi -f $(docker images -q)
+docker volume rm sextant-dev_postgres-data
 ```
 **Starting api:**
 
 STEP 3.1.1: Open a shell terminal.
-STEP 3.1.2: Access the internals of the sextant-api container by running the `make api.cli` script.
-STEP 3.1.3: Assuming that you have a completely clean sextant state, run the preserve script. If you are merely re-starting stopped containers skip this step.
-STEP 3.1.4: Activate the api code.
+STEP 3.1.2: Set the enviroment variable `export MANUALRUN=1`
+STEP 3.1.3: Access the internals of the sextant-api container by running the `make api.cli` script.
+STEP 3.1.4: Assuming that you have a completely clean sextant state, run the preserve script. If you are merely re-starting stopped containers skip this step.
+STEP 3.1.5: Activate the api code.
 
 Assuming a completely clean state, execute the following sequence of commands:
 
 ```bash
+export MANUALRUN=1
 make api.cli
 npm run preserve 
 node src/index.js
 ```
 Running the command `npm run preserve` populate the postgres with appropriate schema.
 
-Assuming you are working from a shutdown state, execute the following sequence of commands:
+ALternatively, if you had already executed the above sequence previously, all you need to do is to run this sequence:
 
 ```bash
+export MANUALRUN=1
 make api.cli
 node src/index.js
 ```
 
 **Starting frontend:**
 
-STEP 3.2.1: Open a shell terminal (different from the one for the API).
-STEP 3.2.2: Run the following command sequence in the terminal
+STEP 3.2.1: Open a shell terminal (one that is separate from the one you use to start the api).
+STEP 3.2.2: Set the enviroment variable `export MANUALRUN=1`
+STEP 3.2.3: Open a shell terminal (different from the one for the API).
+STEP 3.2.4: Run the following command sequence in the terminal
 
 ```bash
+export MANUALRUN=1
 make frontend.cli
 yarn run develop
 ```
