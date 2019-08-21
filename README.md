@@ -35,9 +35,9 @@ git clone git@github.com:catenasys/sextant-api.git
 
 ## Running the project for development
 
-STEP 1: Set up your AWS credentials
-STEP 2: Build artefacts and prep docker containers for execution
-STEP 3: Start up api and sextant frontend
+STEP 1: Set up your AWS credentials <br>
+STEP 2: Build artefacts and prep docker containers for execution <br>
+STEP 3: Start up api and sextant frontend <br>
 
 #### STEP 1 - AWS credentials
 
@@ -56,9 +56,9 @@ These credentials will be used by the api container when connecting to AWS in in
 
 From within the `sextant-dev` folder:
 
-STEP 2.1: Open a shell terminal
-STEP 2.2: Set the enviroment variable `export MANUALRUN=1`
-STEP 2.3: Run the command `make dev`
+STEP 2.1: Open a shell terminal <br>
+STEP 2.2: Set the enviroment variable `export MANUALRUN=1` <br>
+STEP 2.3: Run the command `make dev` <br>
 
 For example, open one bash terminal and run the following sequence of commands:
 
@@ -84,11 +84,11 @@ docker volume rm sextant-dev_postgres-data
 ```
 **Starting api:**
 
-STEP 3.1.1: Open a shell terminal.
-STEP 3.1.2: Set the enviroment variable `export MANUALRUN=1`
-STEP 3.1.3: Access the internals of the sextant-api container by running the `make api.cli` script.
-STEP 3.1.4: Assuming that you have a completely clean sextant state, run the preserve script. If you are merely re-starting stopped containers skip this step.
-STEP 3.1.5: Activate the api code.
+STEP 3.1.1: Open a shell terminal. <br>
+STEP 3.1.2: Set the enviroment variable `export MANUALRUN=1` <br>
+STEP 3.1.3: Access the internals of the sextant-api container by running the `make api.cli` script. <br>
+STEP 3.1.4: Assuming that you have a completely clean sextant state, run the preserve script. If you are merely re-starting stopped containers skip this step.<br>
+STEP 3.1.5: Activate the api code.<br>
 
 Assuming a completely clean state, execute the following sequence of commands:
 
@@ -100,7 +100,7 @@ node src/index.js
 ```
 Running the command `npm run preserve` populate the postgres with appropriate schema.
 
-ALternatively, if you had already executed the above sequence previously, all you need to do is to run this sequence:
+Alternatively, if you have already executed the above sequence previously, all you need to do is to run this sequence:
 
 ```bash
 export MANUALRUN=1
@@ -110,10 +110,10 @@ node src/index.js
 
 **Starting frontend:**
 
-STEP 3.2.1: Open a shell terminal (one that is separate from the one you use to start the api).
-STEP 3.2.2: Set the enviroment variable `export MANUALRUN=1`
-STEP 3.2.3: Open a shell terminal (different from the one for the API).
-STEP 3.2.4: Run the following command sequence in the terminal
+STEP 3.2.1: Open a shell terminal (one that is separate from the one you use to start the api).<br>
+STEP 3.2.2: Set the enviroment variable `export MANUALRUN=1`<br>
+STEP 3.2.3: Open a shell terminal (different from the one for the API)<br>
+STEP 3.2.4: Run the following command sequence in the terminal<br>
 
 ```bash
 export MANUALRUN=1
