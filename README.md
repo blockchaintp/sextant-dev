@@ -52,7 +52,7 @@ You will need to set it in a profile (e.g. in `.bashrc` or `.bash_profile` or us
 
 These credentials will be used by the api container when connecting to AWS in instances where you need to connect to a BTP AWS kubernetes instance.
 
-#### STEP 2 - Build executable artefacts
+#### STEP 2 - Build executable artifacts
 
 From within the `sextant-dev` folder:
 
