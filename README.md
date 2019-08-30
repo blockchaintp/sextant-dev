@@ -95,10 +95,10 @@ Assuming a completely clean state, execute the following sequence of commands:
 ```bash
 export MANUALRUN=1
 make api.cli
-yarn run preserve
+npm run preserve
 node src/index.js
 ```
-Running the command `yarn run preserve` populates the postgres db with the appropriate schema.
+Running the command `npm run preserve` populates the postgres db with the appropriate schema.
 
 Alternatively, if you have already executed the above sequence previously, all you need to do is to run this sequence:
 
@@ -118,5 +118,5 @@ STEP 3.2.4: Run the following command sequence in the terminal<br>
 ```bash
 export MANUALRUN=1
 make frontend.cli
-yarn run develop
+npm run develop
 ```

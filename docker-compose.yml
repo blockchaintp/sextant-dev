@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else yarn run develop; fi'
+    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else npm run develop; fi'
     environment:
       - NODE_ENV=development
       - MANUALRUN
@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile
       args:
         METERING_MODULE: ecs.js
-    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else yarn run serve; fi'
+    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else npm run serve; fi'
     depends_on:
       - postgres
     environment:
