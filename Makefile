@@ -12,7 +12,7 @@ frontend.cli:
 
 .PHONY: frontend.run
 frontend.run:
-	docker-compose exec frontend yarn run develop
+	docker-compose exec frontend npm run develop
 
 .PHONY: api.cli
 api.cli:
@@ -20,12 +20,12 @@ api.cli:
 
 .PHONY: api.run
 api.run:
-	docker-compose exec api yarn run serve
+	docker-compose exec api npm run serve
 
 .PHONY: psql
-psql:
+psql:t
 	docker-compose exec postgres psql --user postgres
 
 .PHONY: database.migrate
 database.migrate:
-	docker-compose exec api yarn run knex -- migrate:latest
+	docker-compose exec api npm run knex -- migrate:latest
