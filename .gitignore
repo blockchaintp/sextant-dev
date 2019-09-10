@@ -1,3 +1,4 @@
 .data
 credentials.env
 .envrc
+.kubeconfig
