@@ -2,6 +2,7 @@
 
 COMMAND=$1
 CLUSTER_NAME=$2
+REGION=$3
 
 function prequisite() {
   aws --version
@@ -18,30 +19,41 @@ function prequisite() {
 function checkClusterName() {
 
   if [ -z $CLUSTER_NAME ]; then
-    echo "Missing cluter name"
+    echo "Missing cluster name"
     exit 1
   fi
 }
 
+function checkRegion() {
+
+  if [ -z $REGION ]; then
+    echo "Missing region name"
+    exit 1
+  fi
+
+}
+
 function create() {
-  eksctl create cluster --name $CLUSTER_NAME --node-type m5.large --nodes 4  
+  eksctl create cluster --name $CLUSTER_NAME --node-type m5.large --nodes 4 --region $REGION
 }
 
 function delete() {
-  eksctl delete cluster --name $CLUSTER_NAME
+  eksctl delete cluster --name $CLUSTER_NAME -r $REGION -w
 }
 
 prequisite
 case "$COMMAND" in
     create)
         checkClusterName
+        checkRegion
         create
         ;;
     delete)
         checkClusterName
+        checkRegion
         delete
         ;;
     *)
-        echo "$0 (create | delete) name"
+        echo "$0 (create | delete) name region"
         ;;
 esac
