@@ -83,6 +83,6 @@ case "$COMMAND" in
         createCred
         ;;
     *)
-        echo "$0 create-cluster | delete-cluster "
+        echo "$0 create-cluster | delete-cluster | create-cred"
         ;;
 esac
