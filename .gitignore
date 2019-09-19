@@ -1,4 +1,15 @@
+#macOS
+.DS_Store
+
+# Sextant
 .data
 credentials.env
+
+# direnv
 .envrc
+
+# Kubernetes
 .kubeconfig
+
+# Visual studio code
+*.code-workspace
