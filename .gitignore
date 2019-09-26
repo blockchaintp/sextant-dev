@@ -13,3 +13,16 @@ credentials.env
 
 # Visual studio code
 *.code-workspace
+
+# daml artefacts
+.interfaces
+.package-database
+
+# Generated folders
+**/dist/
+
+# Node
+**/node_modules/
+
+# Logs
+**/*.log
