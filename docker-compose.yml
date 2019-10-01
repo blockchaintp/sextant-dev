@@ -46,7 +46,7 @@ services:
       context: ../sextant-api
       dockerfile: Dockerfile
       args:
-        METERING_MODULE: ecs.js
+        METERING_MODULE: aws_sfs.js
     entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else npm run serve; fi'
     depends_on:
       - postgres
