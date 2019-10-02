@@ -1,0 +1,23 @@
+daml 1.2
+
+module CreateToken where
+
+template Token
+    with 
+      issuer : Party
+      owner : Party
+      value : Int
+    where
+        signatory issuer
+        observer owner              
+              
+
+create_token_test = scenario do
+  boe <- getParty "Bank of England"
+  alice <- getParty "alice"
+  submit boe do
+    create Token with issuer = boe; owner = alice; value = 1
+  
+     
+    
+    

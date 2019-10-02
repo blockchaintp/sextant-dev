@@ -1,0 +1,31 @@
+{
+  "name": "daml-node-grpc-smoke-test",
+  "version": "0.0.1",
+  "description": "A smoke test to verify that dmal grpc is compatible with appropriate sandbox",
+  "main": "index.js",
+  "scripts": {
+    "test": "node *.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catenasys/daml-node-ledger-api.git"
+  },
+  "keywords": [
+    "daml",
+    "node",
+    "grpc"
+  ],
+  "author": "Paul Sitoh",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/catenasys/daml-node-ledger-api/issues"
+  },
+  "homepage": "https://github.com/catenasys/daml-node-ledger-api#readme",
+  "dependencies": {
+    "@digitalasset/daml-ledger": "0.8.1"
+  },
+  "devDependencies": {
+    "shelljs": "0.8.3",
+    "tape": "4.11.0"
+  }
+}

@@ -1,0 +1,12 @@
+sdk-version: 0.13.20
+name: daml-node-ledger-api
+version: 1.0.0
+source: daml/Main.daml
+parties:
+- Alice
+- Bob
+exposed-modules:
+- CreateToken
+dependencies:
+- daml-prim
+- daml-stdlib
