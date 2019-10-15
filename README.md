@@ -120,3 +120,7 @@ export MANUALRUN=1
 make frontend.cli
 npm run develop
 ```
+
+## Support for NodeJS GRPC smoke testing
+
+Please refer to instruction [./daml-node-grpc-smoke/README.md](./daml-node-grpc-smoke/README.md)
