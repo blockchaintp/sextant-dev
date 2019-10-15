@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/catenasys/daml-node-ledger-api#readme",
   "dependencies": {
-    "@digitalasset/daml-ledger": "0.8.1"
+    "@digitalasset/daml-ledger": "0.8.2"
   },
   "devDependencies": {
     "shelljs": "0.8.3",

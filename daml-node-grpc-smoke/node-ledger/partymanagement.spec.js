@@ -1,8 +1,6 @@
 const test = require('tape');
 const ledger = require('@digitalasset/daml-ledger');
 
-// Wrappers
-
 const getSandboxClient = async (host, port) => {
     try{
         const client = await ledger.DamlLedgerClient.connect({host,port});
