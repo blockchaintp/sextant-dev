@@ -120,7 +120,15 @@ export MANUALRUN=1
 make frontend.cli
 npm run develop
 ```
+## Choose an Edition Module
+By default, sextant builds in 'Dev-Mode'. If you'd like to build other editions, you'll need to edit the volume being copied in `docker-compose.yml` Instead of dev.js, copy the edition you want to build.
+```yaml
+volumes:
+  - ../sextant-api/src:/app/api/src
+  - ../sextant-api/test:/app/api/test
+  - ../sextant-api/migrations:/app/api/migrations
+  - ../sextant-api/editions/dev.js:/app/api/src/edition.js
+  ```
 
 ## Support for NodeJS GRPC smoke testing
-
 Please refer to instruction [./daml-node-grpc-smoke/README.md](./daml-node-grpc-smoke/README.md)
