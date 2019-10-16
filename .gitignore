@@ -17,6 +17,7 @@ credentials.env
 # daml artefacts
 .interfaces
 .package-database
+.daml
 
 # Generated folders
 **/dist/

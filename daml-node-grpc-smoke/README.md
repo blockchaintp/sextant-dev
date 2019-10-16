@@ -1,22 +1,19 @@
 # Overview
 
-A simple node command line app to invoke daml ledger
+A simple node command line app to verify that the version of node-grpc binding is working and that you are confident that it will work with sextant-api.
 
-# Pre-requisite
+## Pre-requisite
 
-1. Install docker
-1. Install C++ conpiler (on macOS install Xcode)
-1. Install node v11.x.x (ideally 11.14.0). Do not install node v12
+1. Install daml sdk, please see doc [https://docs.daml.com/getting-started/installation.html](https://docs.daml.com/getting-started/installation.html)
+1. Install node versions between 10.16.2 and 11.14.0. Do not install node v12
 
-# To test against sandbox
+## Test against sandbox
 
-1. `cd` into node-ledger
-1. Setup the sandbox `ops.sh setup`
-1. Run the test scripts `ops.sh test`
-1. Teardown the sandbox `ops.sh teardown`
-1. You should see the following:
+1. Open a terminal and setup the sandbox `ops.sh setup`
+1. Open another terminal and run the test scripts `ops.sh test`
+1. If you see the following result, it means the grpc binding is working correctly:
 
-```
+```shell
 TAP version 13
 # get client id should return an id associated with the ledger
 ok 1 should be equal

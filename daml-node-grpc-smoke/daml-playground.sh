@@ -2,5 +2,9 @@
 
 export PATH=$PATH:$HOME/.daml/bin
 
-daml build
-daml sandbox $PWD/.daml/dist/daml-node-ledger-api-1.0.0.dar
+if [ -d ${PWD}/dist ]; then
+    rm -rf ${PWD}/dist
+fi
+
+daml build --project-root $PWD -o $PWD/dist/daml-node-ledger-api.dar
+daml sandbox $PWD/dist/daml-node-ledger-api.dar
