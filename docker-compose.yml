@@ -41,6 +41,7 @@ services:
       - ../sextant/src:/app/frontend/src
       - ../sextant/config:/app/frontend/config
       - ../sextant/dist:/app/frontend/dist
+      - ../sextant/editions/dev.js:/app/frontend/src/edition.js
   api:
     build:
       context: ../sextant-api
@@ -64,3 +65,4 @@ services:
       - ../sextant-api/src:/app/api/src
       - ../sextant-api/test:/app/api/test
       - ../sextant-api/migrations:/app/api/migrations
+      - ../sextant-api/editions/dev.js:/app/api/src/edition.js
