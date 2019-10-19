@@ -11,13 +11,16 @@ case $COMMAND in
     "setup")
         ./daml-playground.sh
         ;;
-    "test")
+    "sandbox")
         pushd ./node-ledger
-            npm test
+            npm run sandbox
         popd
         ;;
+    "daml-rpc")
+        echo "To-do"
+        ;;
     *)
-        echo "$0 setup | test"
+        echo "$0 setup | sandbox | daml-rpc"
         ;;
 esac
 

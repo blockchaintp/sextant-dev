@@ -7,4 +7,4 @@ if [ -d ${PWD}/dist ]; then
 fi
 
 daml build --project-root $PWD -o $PWD/dist/daml-node-ledger-api.dar
-daml sandbox $PWD/dist/daml-node-ledger-api.dar
+daml sandbox

@@ -10,7 +10,6 @@ template Token
     where
         signatory issuer
         observer owner              
-              
 
 create_token_test = scenario do
   boe <- getParty "Bank of England"
