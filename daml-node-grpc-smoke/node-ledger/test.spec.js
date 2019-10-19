@@ -2,11 +2,19 @@ const test = require('tape');
 const getSandboxClient = require('./common').getSandboxClient;
 const listParties = require('./common').listParties;
 const allocateParties = require('./common').allocateParties;
+const uploadDar = require('./common').uploadDar;
+const listPackages = require('./common').listPackages;
 
 const host = process.env.ENDPOINT_URL | "localhost";
 const port = process.env.ENDPOINT_PORT | 6865;
 
 var client
+test('get client and it should return an id', async t => {
+    client = await getSandboxClient(host, port);
+    t.equal(client.ledgerId.includes('sandbox'), true);
+    t.end();
+});
+
 test('get client id should return an id associated with the ledger', async t =>{
     client = await getSandboxClient(host,port);
     t.equal(client.ledgerId.includes('sandbox'), true);
@@ -39,5 +47,14 @@ test('allocating same parties twice it should throw an Error number', async t =>
 test('get list of parties should return an array of parties details', async t => {
    const parties = await listParties(client);
     t.ok(Array.isArray(parties.partyDetails)===true);
+    t.end();
+});
+
+test('Upload Dar', async t => {
+    const beforeUpload = await listPackages(client);
+    console.log(`Before upload --> ${JSON.stringify(beforeUpload.packageDetailsList)}`);
+    await uploadDar(client, '../dist/daml-node-ledger-api.dar');
+    const afterUpload = await listPackages(client);
+    console.log(`After upload ---> ${JSON.stringify(afterUpload.packageDetailsList)}`);
     t.end();
 });

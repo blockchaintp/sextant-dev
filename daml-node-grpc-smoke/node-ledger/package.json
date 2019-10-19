@@ -4,7 +4,7 @@
   "description": "A smoke test to verify that dmal grpc is compatible with appropriate sandbox",
   "main": "index.js",
   "scripts": {
-    "sandbox": "node *.spec.js"
+    "sandbox": "node test.spec.js"
   },
   "repository": {
     "type": "git",
