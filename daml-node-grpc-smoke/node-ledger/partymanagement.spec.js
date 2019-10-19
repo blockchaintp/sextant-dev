@@ -1,33 +1,10 @@
 const test = require('tape');
-const ledger = require('@digitalasset/daml-ledger');
+const getSandboxClient = require('./common').getSandboxClient;
+const listParties = require('./common').listParties;
+const allocateParties = require('./common').allocateParties;
 
-const getSandboxClient = async (host, port) => {
-    try{
-        const client = await ledger.DamlLedgerClient.connect({host,port});
-        client.partyManagementClient
-        return client;
-    }catch(err){
-        console.log(`Error: ${err}`);
-        process.exit(1);
-    }
-}
-
-const listParties = async (client) => {
-    const parties = client.partyManagementClient.listKnownParties();
-    return parties;
-}
-
-const allocateParties = async (client, party, displayName) => {
-    const response = client.partyManagementClient.allocateParty({
-        partyIdHint: party,
-        displayName: displayName
-    });
-
-    return response;
-}
-
-const host = "localhost";
-const port = 6865;
+const host = process.env.ENDPOINT_URL | "localhost";
+const port = process.env.ENDPOINT_PORT | 6865;
 
 var client
 test('get client id should return an id associated with the ledger', async t =>{

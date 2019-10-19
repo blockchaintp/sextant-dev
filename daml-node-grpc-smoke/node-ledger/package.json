@@ -4,7 +4,7 @@
   "description": "A smoke test to verify that dmal grpc is compatible with appropriate sandbox",
   "main": "index.js",
   "scripts": {
-    "test": "node *.spec.js"
+    "sandbox": "node *.spec.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/catenasys/daml-node-ledger-api#readme",
   "dependencies": {
-    "@digitalasset/daml-ledger": "0.8.2"
+    "@digitalasset/daml-ledger": "0.8.3"
   },
   "devDependencies": {
     "shelljs": "0.8.3",
