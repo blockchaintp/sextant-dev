@@ -5,8 +5,10 @@ const allocateParties = require('./common').allocateParties;
 const uploadDar = require('./common').uploadDar;
 const listPackages = require('./common').listPackages;
 
-const host = process.env.ENDPOINT_URL | "localhost";
-const port = process.env.ENDPOINT_PORT | 6865;
+const host = process.env.ENDPOINT_URL;
+const port = process.env.ENDPOINT_PORT;
+
+console.log(`Connecting to: ${host}:${port}`);
 
 var client
 test('get client and it should return an id', async t => {
