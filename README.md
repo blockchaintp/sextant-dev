@@ -132,3 +132,53 @@ volumes:
 
 ## Support for NodeJS GRPC smoke testing
 Please refer to instruction [./daml-node-grpc-smoke/README.md](./daml-node-grpc-smoke/README.md)
+
+## Boot a Kubernetes cluster locally
+
+It can be useful to have a Kubernetes cluster running locally on your laptop to test against.
+
+To do this, we will use [kind](https://github.com/kubernetes-sigs/kind).
+
+[install kind](https://github.com/kubernetes-sigs/kind#installation-and-usage)
+
+Boot the stack as normal (so you have sextant and sextant-api up and running).
+
+Create a new kind cluster:
+
+```bash
+kind create cluster
+```
+
+This will have created a container called `kind-control-plane`
+
+It will also have adjusted your kubeconfig to point at the local cluster.
+
+```bash
+kubectl get ns
+```
+
+You might have done some work in the meantime that involved connecting to a different cluster.  sIf you want to re-point your kubeconfig at the local cluster:
+
+```bash
+kind export kubeconfig
+```
+
+Before we can use this cluster with sextant - we need to connect the api container to the kind-control-plane.
+
+```bash
+docker network connect sextant-dev_default kind-control-plane
+```
+
+We can then test this:
+
+```bash
+make api.cli
+apt-get install telnet
+telnet kind-control-plane 6443
+```
+
+You can launch sextant, and create a cluster.
+
+Run the script to create the service account and download the credentials.
+
+You must change the API server URL to `https://kind-control-plane:6443`.
