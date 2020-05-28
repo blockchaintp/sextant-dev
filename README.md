@@ -87,25 +87,12 @@ docker volume rm sextant-dev_postgres-data
 STEP 3.1.1: Open a shell terminal. <br>
 STEP 3.1.2: Set the environment variable `export MANUALRUN=1` <br>
 STEP 3.1.3: Access the internals of the sextant-api container by running the `make api.cli` script. <br>
-STEP 3.1.4: Assuming that you have a completely clean sextant state, run the preserve script. If you are merely re-starting stopped containers skip this step.<br>
-STEP 3.1.5: Activate the api code.<br>
-
-Assuming a completely clean state, execute the following sequence of commands:
+STEP 3.1.4: Activate the api code.<br>
 
 ```bash
 export MANUALRUN=1
 make api.cli
-npm run preserve
-node src/index.js
-```
-Running the command `npm run preserve` populates the postgres db with the appropriate schema.
-
-Alternatively, if you have already executed the above sequence previously, all you need to do is to run this sequence:
-
-```bash
-export MANUALRUN=1
-make api.cli
-node src/index.js
+npm run serve
 ```
 
 **Starting frontend:**
