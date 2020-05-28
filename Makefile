@@ -23,7 +23,7 @@ api.run:
 	docker-compose exec api npm run serve
 
 .PHONY: psql
-psql:t
+psql:
 	docker-compose exec postgres psql --user postgres
 
 .PHONY: database.migrate
