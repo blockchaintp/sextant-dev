@@ -169,3 +169,27 @@ You can launch sextant, and create a cluster.
 Run the script to create the service account and download the credentials.
 
 You must change the API server URL to `https://kind-control-plane:6443`.
+
+## Running the taekion-tp locally
+
+To test the taekion tp locally with kind - first spin up a kind cluster by following the guide above.
+
+Then get access to the taekion docker repo and:
+
+```bash
+docker pull taekion/taekion-fs-tp:latest
+```
+
+Then import this image to the kind cluster:
+
+```bash
+kind load docker-image taekion/taekion-fs-tp:latest
+```
+
+The taekion deployment yaml has got `imagePullPolicy: Never` for the taekion tp.
+
+**IMPORTANT** make sure we remove `imagePullPolicy: Never` before trying to deploy this to production.
+
+The current setup will only work locally in kind by doing the trick above.
+
+TODO: work out how to get imagePullSecrets to work with kind.
