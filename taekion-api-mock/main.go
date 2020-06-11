@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"crypto/sha512"
@@ -8,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hash"
+	"io"
 	"math/rand"
 	"net/http"
 	"os"
@@ -19,7 +21,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	flags "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 )
@@ -32,6 +34,15 @@ type returnVal struct {
 	Action  string      `json:"action"`
 	Object  string      `json:"object"`
 	Payload interface{} `json:"payload"`
+}
+
+// CreatePayload struct holds values used for creating TFS volumes and snapshots.
+type createPayload struct {
+	Volume      string `json:"volume"`
+	Id          string `json:"id"`
+	Encryption  string `json:"encryption"`
+	Compression string `json:"compression"`
+	Fingerprint string `json:"fingerprint"`
 }
 
 func main() {
@@ -59,9 +70,15 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.Path("/volume").
 		Methods(http.MethodGet).
+		HandlerFunc(volumeList)
+	router.Path("/volume").
+		Methods(http.MethodPost).
 		HandlerFunc(volume)
 	router.Path("/snapshot").
 		Methods(http.MethodGet).
+		HandlerFunc(snapshotList)
+	router.Path("/snapshot").
+		Methods(http.MethodPost).
 		HandlerFunc(snapshot)
 	s := router.
 		PathPrefix("/debug").
@@ -142,7 +159,7 @@ func address(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 		case "datablock":
-			hashVal := strings.ToLower(req.FormValue("hash"))
+			hashVal := strings.ToLower(req.FormValue("id"))
 			_, err := hex.DecodeString(hashVal)
 			hashLen := len(hashVal)
 
@@ -159,7 +176,7 @@ func address(w http.ResponseWriter, req *http.Request) {
 
 			} else {
 				response.Payload = map[string]string{
-					"name":    "datalock",
+					"name":    "datablock",
 					"id":      id,
 					"address": hexAddress,
 				}
@@ -194,7 +211,7 @@ func address(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -230,7 +247,7 @@ func bundle(w http.ResponseWriter, req *http.Request) {
 
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -248,7 +265,7 @@ func datablock(w http.ResponseWriter, req *http.Request) {
 
 	response.Action = "debug/datablock"
 	response.Object = "datablock"
-	hashVal := strings.ToLower(req.FormValue("hash"))
+	hashVal := strings.ToLower(req.FormValue("id"))
 	_, err := hex.DecodeString(hashVal)
 	hashLen := len(hashVal)
 
@@ -277,7 +294,7 @@ func datablock(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -294,13 +311,13 @@ func debugVolume(w http.ResponseWriter, req *http.Request) {
 
 	response.Action = "debug/volume"
 	response.Object = "volume"
-	volMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("name"))
+	volMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("id"))
 
 	if volMatched {
-		lastHash := hexDigest(512, "demo")[:6] + "00" + hexDigest(512, req.FormValue("name"))[:62]
-		fingerprint := hexDigest(256, req.FormValue("name"))[:32]
+		lastHash := hexDigest(512, "demo")[:6] + "00" + hexDigest(512, req.FormValue("id"))[:62]
+		fingerprint := hexDigest(256, req.FormValue("id"))[:32]
 		response.Payload = map[string]string{
-			"volume name":      req.FormValue("name"),
+			"volume name":      req.FormValue("id"),
 			"root inode uuid":  uuid.New().String(),
 			"last hash":        lastHash,
 			"compression type": "LZ4",
@@ -308,7 +325,7 @@ func debugVolume(w http.ResponseWriter, req *http.Request) {
 			"key fingerprint":  fingerprint,
 		}
 
-		if err := jsonReponse(w, response, 200); err != nil {
+		if err := jsonResponse(w, response, 200); err != nil {
 			errorHandler(w, 500, "Internal Server Error")
 			return
 		}
@@ -339,7 +356,7 @@ func directory(w http.ResponseWriter, req *http.Request) {
 		response.Payload = map[string]map[string]uuid.UUID{"files": {"example.txt": uuid.New(), "demo.txt": uuid.New()}}
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -364,7 +381,7 @@ func inode(w http.ResponseWriter, req *http.Request) {
 	}
 
 	response.Payload = map[string]string{
-		"uuid":           uuid.New().String(),
+		"uuid":           req.FormValue("id"),
 		"file mode":      "0777",
 		"user id":        "1000",
 		"group id":       "1000",
@@ -375,7 +392,7 @@ func inode(w http.ResponseWriter, req *http.Request) {
 		"directory uuid": uuid.New().String(),
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -431,7 +448,7 @@ func wrapper(w http.ResponseWriter, req *http.Request) {
 		"data":             data,
 	}
 
-	if err := jsonReponse(w, response, 200); err != nil {
+	if err := jsonResponse(w, response, 200); err != nil {
 		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
@@ -439,21 +456,26 @@ func wrapper(w http.ResponseWriter, req *http.Request) {
 	return
 }
 
-// snapShot simulates creating a volume snapshot or listing a volume snapshot from the TFS API.
+// snapshot simulates creating a volume snapshot with the TFS API.
 // Query Arguments:
 // "create" - string - name of new snapshot to create
 // "volume" - string - name of volume that snapshot represents
-// "list" - string, example: ""
 
 func snapshot(w http.ResponseWriter, req *http.Request) {
 	var response returnVal
-
-	response.Action = "snapshot"
+	var createPayload createPayload
+	response.Action = "create"
 	response.Object = "snapshot"
-	snapMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("create"))
-	snapshotNameLength := len(req.FormValue("create"))
-	volMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("volume"))
-	volumeNameLength := len(req.FormValue("volume"))
+
+	err := JsonFromBody(w, req, &createPayload, 1024)
+	if err != nil {
+		errorHandler(w, 500, "internal server error")
+		return
+	}
+	snapMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, createPayload.Id)
+	snapshotNameLength := len(createPayload.Id)
+	volMatched, _ := regexp.MatchString(`^[\w]{1,128}$`, createPayload.Volume)
+	volumeNameLength := len(createPayload.Volume)
 
 	if !volMatched && volumeNameLength == 0 {
 		errorHandler(w, 400, "Volume name must be supplied.")
@@ -465,10 +487,10 @@ func snapshot(w http.ResponseWriter, req *http.Request) {
 
 	if snapMatched {
 		createSnapshot := make(map[string]string)
-		createSnapshot["name"] = req.FormValue("create")
+		createSnapshot["name"] = createPayload.Id
 
 		if volMatched {
-			createSnapshot["volume"] = req.FormValue("volume")
+			createSnapshot["volume"] = createPayload.Volume
 		} else if volumeNameLength == 0 {
 			errorHandler(w, 400, "Volume name must be supplied.")
 			return
@@ -479,7 +501,7 @@ func snapshot(w http.ResponseWriter, req *http.Request) {
 
 		response.Payload = createSnapshot
 
-		if err := jsonReponse(w, response, 200); err != nil {
+		if err := jsonResponse(w, response, 200); err != nil {
 			errorHandler(w, 500, "Internal Server Error")
 			return
 		}
@@ -490,55 +512,73 @@ func snapshot(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	empty, val := req.URL.Query()["list"]
+}
 
-	if val && empty[0] == "" {
+// snapshotList simulates listing a volume's snapshots from the TFS API.
+// Query Arguments:
+// 		None
+func snapshotList(w http.ResponseWriter, req *http.Request) {
+	var response returnVal
 
-		if volMatched {
-			response.Payload = map[string]map[string]string{
-				"Data": {
-					"volume":       req.FormValue("volume"),
-					"testSnapshot": time.Now().String(),
-					"demoSnapshot": time.RFC822,
-				},
-			}
-
-		}
-		if err := jsonReponse(w, response, 200); err != nil {
-			errorHandler(w, 500, "Internal Server Error")
-			return
-		}
-		return
-	} else {
-		errorHandler(w, 400, "\"list\" parameter does not accept a value")
+	response.Action = "list"
+	response.Object = "snapshot"
+	volMatched, err := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("volume"))
+	if err != nil {
+		errorHandler(w, 500, err.Error())
 		return
 	}
 
+	if volMatched {
+		response.Payload = map[string]map[string]string{
+			"Data": {
+				"volume":       req.FormValue("volume"),
+				"testSnapshot": time.Now().String(),
+				"demoSnapshot": time.RFC822,
+			},
+		}
+
+	} else {
+		errorHandler(w, 400, "invalid volume name string submitted")
+		return
+	}
+
+	if err := jsonResponse(w, response, 200); err != nil {
+		errorHandler(w, 500, "Internal Server Error")
+		return
+	}
+	return
+
 }
 
-// volume simulates creating or listing a volume from the TFS API.
+// volume simulates creating with the TFS API.
 // Query Arguments:
 // "create" - string - name of new snapshot to create
 // "compression" - string - example "LZ4", "none"
 // "encryption" - string - example "aes_gcm", "none"
 // "fingerprint" - string - example "2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea"
-// "list" - string, example: ""
 
 func volume(w http.ResponseWriter, req *http.Request) {
 	var response returnVal
+	var createPayload createPayload
 
-	response.Action = "volume"
+	err := JsonFromBody(w, req, &createPayload, 1024)
+	if err != nil {
+		errorHandler(w, 500, "internal server error")
+		return
+	}
+
+	response.Action = "create"
 	response.Object = "volume"
-	matched, _ := regexp.MatchString(`^[\w]{1,128}$`, req.FormValue("create"))
-	volumeNameLength := len(req.FormValue("create"))
+	matched, _ := regexp.MatchString(`^[\w]{1,128}$`, createPayload.Id)
+	volumeNameLength := len(createPayload.Id)
 
 	if matched {
 		createVolume := make(map[string]string)
-		createVolume["name"] = req.FormValue("create")
+		createVolume["name"] = createPayload.Id
 		validCompression := map[string]int{"lz4": 2, "none": 1}
 
-		if validCompression[strings.ToLower(req.FormValue("compression"))] > 0 {
-			createVolume["compression"] = req.FormValue("compression")
+		if validCompression[strings.ToLower(createPayload.Compression)] > 0 {
+			createVolume["compression"] = createPayload.Compression
 		} else {
 			errorHandler(w, 400, "Invalid compression type supplied")
 			return
@@ -546,10 +586,10 @@ func volume(w http.ResponseWriter, req *http.Request) {
 
 		validEncryption := map[string]int{"aes_gcm": 2, "none": 1}
 
-		if validEncryption[strings.ToLower(req.FormValue("encryption"))] > 0 {
-			createVolume["encryption"] = req.FormValue("encryption")
-			hashVal := req.FormValue("fingerprint")
-			if strings.ToLower(req.FormValue("encryption")) != "none" {
+		if validEncryption[strings.ToLower(createPayload.Encryption)] > 0 {
+			createVolume["encryption"] = createPayload.Encryption
+			hashVal := createPayload.Fingerprint
+			if strings.ToLower(createPayload.Encryption) != "none" {
 				_, err := hex.DecodeString(hashVal)
 				hashLen := len(hashVal)
 
@@ -566,7 +606,7 @@ func volume(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 
-			createVolume["fingerprint"] = req.FormValue("fingerprint")
+			createVolume["fingerprint"] = createPayload.Fingerprint
 		} else {
 			errorHandler(w, 400, "Invalid encryption type supplied.")
 			return
@@ -574,7 +614,7 @@ func volume(w http.ResponseWriter, req *http.Request) {
 
 		response.Payload = createVolume
 
-		if err := jsonReponse(w, response, 200); err != nil {
+		if err := jsonResponse(w, response, 200); err != nil {
 			errorHandler(w, 500, "Internal Server Error")
 			return
 		}
@@ -584,44 +624,41 @@ func volume(w http.ResponseWriter, req *http.Request) {
 		errorHandler(w, 400, "Invalid volume name submitted.")
 		return
 	}
+}
 
-	empty, val := req.URL.Query()["list"]
+// volumeList simulates requesting a list of existing volumes from the TFS API.
 
-	if val && empty[0] == "" {
-		response.Payload = map[string]map[string]map[string]string{
-			"volumes": {
-				"exampleVol0": {
-					"compression": "LZ4",
-					"encryption":  "AES-GCM",
-					"fingerprint": "2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea",
-				},
-				"exampleVol1": {
-					"compression": "none",
-					"encryption":  "none",
-					"fingerprint": "none",
-				},
+func volumeList(w http.ResponseWriter, req *http.Request) {
+	var response returnVal
+
+	response.Action = "list"
+	response.Object = "volume"
+
+	response.Payload = map[string]map[string]map[string]string{
+		"volumes": {
+			"exampleVol0": {
+				"compression": "LZ4",
+				"encryption":  "AES-GCM",
 			},
-		}
+			"exampleVol1": {
+				"compression": "none",
+				"encryption":  "none",
+			},
+		},
+	}
 
-		if err := jsonReponse(w, response, 200); err != nil {
-			errorHandler(w, 500, "Internal Server Error")
-			return
-		}
-
-		return
-	} else if len(empty) > 0 && len(empty[0]) > 0 {
-		errorHandler(w, 400, "\"list\" parameter does not accept a value")
-		return
-	} else {
-		errorHandler(w, 400, "no valid parameters supplied.")
+	if err := jsonResponse(w, response, 200); err != nil {
+		errorHandler(w, 500, "Internal Server Error")
 		return
 	}
+
+	return
 
 }
 
 // jsonResponse is a helper function to return JSON to client.
 
-func jsonReponse(w http.ResponseWriter, response interface{}, status int) error {
+func jsonResponse(w http.ResponseWriter, response interface{}, status int) error {
 
 	if resp, err := json.Marshal(response); err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -662,4 +699,38 @@ func errorHandler(w http.ResponseWriter, code int, message string) {
 	http.Error(w, output, code)
 	log.Errorf(output)
 	return
+}
+
+/*
+JsonFromBody attempts to read the request body and unmarshal it as JSON into the provided "val" arg.
+If the body cannot be decoded this method generates an error response containing details of the error.
+
+This method closes the request body stream.
+*/
+func JsonFromBody(_ http.ResponseWriter, r *http.Request, val *createPayload, maxBytes int64) error {
+	var err error
+
+	// If error closing response body, replace nil error value with r.Body.Close error.
+	defer func() {
+		deferErr := r.Body.Close()
+		if deferErr != nil {
+			err = deferErr
+		}
+	}()
+
+	// Read body into a buffer of []bytes of size maxBytes
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(io.LimitReader(r.Body, maxBytes))
+	if err != nil {
+		//http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return err
+	}
+
+	// Parse json bytes into data structure pointed to by val
+	if err = json.Unmarshal(buf.Bytes(), &val); err != nil {
+		//http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return err
+	}
+
+	return nil
 }

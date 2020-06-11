@@ -174,6 +174,8 @@ You must change the API server URL to `https://kind-control-plane:6443`.
 
 To test the taekion tp locally with kind - first spin up a kind cluster by following the guide above.
 
+### tp image
+
 Then get access to the taekion docker repo and:
 
 ```bash
@@ -193,3 +195,14 @@ The taekion deployment yaml has got `imagePullPolicy: Never` for the taekion tp.
 The current setup will only work locally in kind by doing the trick above.
 
 TODO: work out how to get imagePullSecrets to work with kind.
+
+### api image
+
+We build and push a manual version of the api image until the actual api image is ready.
+
+```bash
+docker build -t binocarlos/taekion-api-mock:v2 taekion-api-mock
+docker push binocarlos/taekion-api-mock:v2
+```
+
+Then make sure to update this image in `sextant-api/src/deployment_templates/taekion/0.1/defaults.yaml`
