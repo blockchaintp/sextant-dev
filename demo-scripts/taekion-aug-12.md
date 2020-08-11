@@ -10,8 +10,10 @@ Before we start - clean up any existing containers.
 kind create cluster
 docker pull taekion/taekion-fs-tp:latest
 docker pull taekion/taekion-fs-middleware:latest
+docker pull taekion/taekion-fs-client:latest
 kind load docker-image taekion/taekion-fs-tp:latest
 kind load docker-image taekion/taekion-fs-middleware:latest
+(cd sextant-api/taekion/client-wrapper && docker build -t binocarlos/taekion-client-wrapper .)
 ```
 
 Now create 4 terminal panes so we can see multiple panes at once.
