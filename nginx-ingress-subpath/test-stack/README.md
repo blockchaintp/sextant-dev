@@ -81,10 +81,22 @@ kubectl apply -f sextant/api-deployment.yaml
 kubectl apply -f sextant/api-service.yaml
 kubectl apply -f sextant/frontend-deployment.yaml
 kubectl apply -f sextant/frontend-service.yaml
-kubectl apply -f sextant/ingress.yaml
+kubectl apply -f sextant/ingress-subpath.yaml
 ```
 
-To then quickly reload the frontend:
+`http://localhost/apples` should now give you a working UI
+
+To test everything still works as expected without a sub-path:
+
+```bash
+kubectl delete -f sextant/ingress-subpath.yaml
+kubectl apply -f sextant/ingress-root.yaml
+```
+
+`http://localhost` should now give you a working UI
+
+
+To quickly reload the frontend image with changes:
 
 ```bash
 function redeploy-frontend() {
