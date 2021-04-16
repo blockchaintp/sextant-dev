@@ -10,13 +10,20 @@ services:
       - api
       - frontend
     environment:
-      - NOXY_DEFAULT_HOST=frontend
-      - NOXY_DEFAULT_PORT=8080
-      - NOXY_DEFAULT_WS=1
-      - NOXY_API_FRONT=/api/v1
+      - NOXY_DEFAULT_HOST=nginx
+      - NOXY_DEFAULT_PORT=80
+      - NOXY_API_FRONT=/apples/api/v1
+      - NOXY_API_BACK=/api/v1
       - NOXY_API_HOST=api
-      - NOXY_PROXY_FRONT=/proxy
+      - NOXY_PROXY_FRONT=/apples/proxy
       - NOXY_PROXY_HOST=api
+      - NOXY_FRONTEND_HOST=frontend
+      - NOXY_FRONTEND_FRONT=/apples
+      - NOXY_FRONTEND_BACK=/
+      - NOXY_FRONTEND_PORT=8080
+      - NOXY_FRONTEND_WS=1
+  nginx:
+    image: nginx
   postgres:
     image: postgres:9.6.1
     ports:
