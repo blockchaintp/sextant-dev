@@ -3,8 +3,26 @@
 ### install
 
 ```bash
-# start kind with ingress enabled & local registry
-bash start.sh
+# start kind with ingress enabled
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+EOF
 # install nginx ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
 kubectl wait --namespace ingress-nginx \
@@ -12,16 +30,15 @@ kubectl wait --namespace ingress-nginx \
   --selector=app.kubernetes.io/component=controller \
   --timeout=90s
 # build local images for sextant
-docker build -t localhost:5000/sextant:local -f ../../../sextant/Dockerfile.multistage ../../../sextant
-docker build -t localhost:5000/sextant-api:local ../../../sextant-api
-docker push localhost:5000/sextant:local
-docker push localhost:5000/sextant-api:local
+docker build -t sextant:local -f ../../../sextant/Dockerfile.multistage ../../../sextant
+docker build -t sextant-api:local ../../../sextant-api
+kind load docker-image sextant:local
+kind load docker-image sextant-api:local
 ```
 
 ### test
 
 ```bash
-# deploy
 kubectl create ns ingress-test
 kubectl apply -f ingress-test/echo-deployment.yaml
 kubectl apply -f ingress-test/echo-service.yaml
@@ -56,3 +73,25 @@ kubectl delete ns ingress-test
 
 ### sextant
 
+```bash
+kubectl create ns sextant
+kubectl apply -f sextant/postgres-deployment.yaml
+kubectl apply -f sextant/postgres-service.yaml
+kubectl apply -f sextant/api-deployment.yaml
+kubectl apply -f sextant/api-service.yaml
+kubectl apply -f sextant/frontend-deployment.yaml
+kubectl apply -f sextant/frontend-service.yaml
+kubectl apply -f sextant/ingress.yaml
+```
+
+To then quickly reload the frontend:
+
+```bash
+function redeploy-frontend() {
+  export TAG=$(date +%s)
+  docker build -t sextant:$TAG -f ../../../sextant/Dockerfile.multistage ../../../sextant
+  kind load docker-image sextant:$TAG
+  kubectl -n sextant set image deployment/frontend frontend=sextant:$TAG
+}
+redeploy-frontend
+```

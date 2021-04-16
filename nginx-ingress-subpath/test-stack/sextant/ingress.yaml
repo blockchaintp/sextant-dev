@@ -10,17 +10,17 @@ spec:
   rules:
   - http:
       paths:
-      - path: /echo(/|$)(.*)
+      - path: /apples(/|$)(.*)
         pathType: Prefix
         backend:
           service:
-            name: echo
+            name: frontend
             port:
               number: 80
-      - path: /nginx(/|$)(.*)
+      - path: /apples(/)(api/v1/.*)
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: api
             port:
               number: 80

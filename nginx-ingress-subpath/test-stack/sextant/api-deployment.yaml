@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
       - name: api
-        image: localhost:5000/sextant-api:local
+        image: sextant-api:local
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
