@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: ingress-test
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: /apples
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /apples(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+      - path: /apples(/)(api/v1/.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: echo
+            port:
+              number: 80

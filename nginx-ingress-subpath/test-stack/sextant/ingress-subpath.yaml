@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: sextant
+  name: ingress-subpath
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: /apples
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /apples(/)(api/v1/.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              number: 80
+      - path: /apples(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

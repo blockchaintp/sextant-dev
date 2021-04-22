@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: ingress-test
+  name: echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: mendhak/http-https-echo
+        ports:
+        - containerPort: 80
