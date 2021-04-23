@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+* fix(docker-compose): remove non-essential env vars [view commit](https://github.com/catenasys/sextant-dev/commit/e9034886b79f77ceac84769d61906d5fc6567b71)
+* SXT-455: add root ingress to test without subpath [view commit](https://github.com/catenasys/sextant-dev/commit/8bfc737afa2ff3fda205806fdae0a862bee5ad4a)
+* example subpath is working [view commit](https://github.com/catenasys/sextant-dev/commit/2eecbb7fac46fceb67d09c3a245dea1b17d9e5fa)
+* local test env [view commit](https://github.com/catenasys/sextant-dev/commit/3570dfcecec054be960f7dfb516374fdaeb4a531)
 * document using kind for local k8s cluster [view commit](https://github.com/catenasys/sextant-dev/commit/5b75efacd1271bd79b862d932e64a9b44c3cc04f)
 * Update test to access any daml deployments [view commit](https://github.com/catenasys/sextant-dev/commit/6ea9fb8b4ea73a29ada4cc36546e71e61f01b235)
 * Update documentation [view commit](https://github.com/catenasys/sextant-dev/commit/cd4820b342d4238307a371481d37bc157e7adeb7)
