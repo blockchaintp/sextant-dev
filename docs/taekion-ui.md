@@ -1,5 +1,15 @@
 ## taekion-ui
 
+# branches
+
+ * sextant/SXT-535
+ * sextant-api/SXT-535
+ * sextant-dev/SXT-535
+ * taekion-fs/SXT-535
+ * helm-charts/SXT-535-features
+
+# local dev
+
 How to spin up the dev environment for developing on the Taekion UI.
 
 ```bash
