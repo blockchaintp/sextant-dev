@@ -7,8 +7,6 @@ This repository supports sextant development which includes:
 
 ## **Prerequisites**
 
----
-
 ### **Install:**
 
 * [docker](https://docs.docker.com/install/)
@@ -42,8 +40,6 @@ git clone git@github.com:catenasys/sextant-api.git
 &nbsp;
 
 ## **Running the project for development**
-
----
 
 1. Set up your AWS credentials
 1. Build artifacts and prep docker containers for execution
@@ -151,8 +147,6 @@ npm run develop
 
 ## **Choose an Edition Module**
 
----
-
 By default, sextant builds in 'Dev-Mode'. If you'd like to build other editions,
 you'll need to edit the volume being copied in `docker-compose.yml`
 Instead of `dev.js`, copy the edition you want to build.
@@ -169,15 +163,11 @@ volumes:
 
 ## **Support for NodeJS GRPC smoke testing**
 
----
-
 Please refer to instruction [./daml-node-grpc-smoke/README.md](./daml-node-grpc-smoke/README.md)
 
 &nbsp;
 
 ## **Boot a Kubernetes cluster locally**
-
----
 
 It can be useful to have a Kubernetes cluster running locally on your
 laptop to test against.
