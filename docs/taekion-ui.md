@@ -93,3 +93,37 @@ tfs-fuse -v test -m $HOME/test
 cd test
 echo hello > file.txt
 ```
+
+## rebuild taekion images
+
+Once we have a deloyment - we will want to iterate on the taekion containers.
+
+Here is how to rebuild and re-deploy the middleware:
+
+```bash
+cd $CODE/taekion-fs
+export TAG=$(date +%s)
+export MIDDLEWARE_IMAGE=taekion/taekion-fs-middleware
+# set this to the namespace you deployed taekion into
+export NAMESPACE=tfs
+make docker-middleware
+docker tag $MIDDLEWARE_IMAGE:latest $MIDDLEWARE_IMAGE:$TAG
+kind load docker-image $MIDDLEWARE_IMAGE:$TAG
+```
+
+Now we need to know the index of the middleware container.
+
+Keep changing the index in this command until we get `taekion/taekion-fs-middleware:XXX`
+
+NOTE: there is probably a better way to update the specific container within the stateful set than manually typing indexes :-)
+
+```bash
+kubectl -n $NAMESPACE get statefulset.apps/tfs-validator -o=jsonpath='{.spec.template.spec.containers[7].image}'
+export CONTAINER_INDEX=7
+```
+
+Now we can update the image using that index:
+
+```bash
+kubectl -n $NAMESPACE patch statefulset tfs-validator --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/'$CONTAINER_INDEX'/image", "value":"'"$MIDDLEWARE_IMAGE:$TAG"'"}]'
+```
