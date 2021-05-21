@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* docs(readme): remove unnecessary horizontal rules [view commit](https://github.com/catenasys/sextant-dev/commit/01572c854b850dbb497a62cacd746b090c96512e)
+* docs(readme): reformat to pass checks and update readme [view commit](https://github.com/catenasys/sextant-dev/commit/38d19009958a2f903a992997aabd1dbce069d653)
+* build(pre-commit): add pre-commit config file [view commit](https://github.com/catenasys/sextant-dev/commit/9609f3594867677b69f66dd8c9317693c62f490a)
 * fix(docker-compose): remove non-essential env vars [view commit](https://github.com/catenasys/sextant-dev/commit/e9034886b79f77ceac84769d61906d5fc6567b71)
 * SXT-455: add root ingress to test without subpath [view commit](https://github.com/catenasys/sextant-dev/commit/8bfc737afa2ff3fda205806fdae0a862bee5ad4a)
 * example subpath is working [view commit](https://github.com/catenasys/sextant-dev/commit/2eecbb7fac46fceb67d09c3a245dea1b17d9e5fa)
