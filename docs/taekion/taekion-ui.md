@@ -68,6 +68,20 @@ kind load docker-image taekion/taekion-fs-tp:latest
 kind load docker-image taekion/taekion-fs-middleware:latest
 ```
 
+## preload other images
+
+If you are on a slow connection - it's quicker to pull the other images to the host and then import them:
+
+```bash
+export IMAGE_TAG=BTP2.1.0rc14
+for image in sawtooth-devmode-engine-rust sawtooth-pbft-engine sawtooth-poet-cli sawtooth-poet-engine sawtooth-poet-validator-registry-tp sawtooth-raft-engine sawtooth-block-info-tp sawtooth-identity-tp sawtooth-intkey-tp-go sawtooth-settings-tp sawtooth-shell metrics-grafana metrics-influxdb sawtooth-validator sawtooth-rest-api; do
+  docker pull blockchaintp/$image:$IMAGE_TAG
+  kind load docker-image blockchaintp/$image:$IMAGE_TAG
+done
+docker pull postgres:11
+kind load docker-image postgres:11
+```
+
 ## update taekion chart
 
 If the chart needs updating - you need to stop the api server and `export USE_LOCAL_CHARTS=1` then restart
@@ -120,6 +134,28 @@ make docker-middleware
 docker tag $MIDDLEWARE_IMAGE:latest $MIDDLEWARE_IMAGE:$TAG
 kind load docker-image $MIDDLEWARE_IMAGE:$TAG
 ```
+## quick rebuild
+
+do this once
+
+```bash
+cd $CODE/taekion-fs
+docker build -f docker/Dockerfile --target client-base -t taekion/client-base:quick .
+docker build -f docker/Dockerfile --target build -t taekion/build:quick .
+```
+
+do this for each rebuild:
+
+```bash
+cd $CODE/taekion-fs
+export TAG=$(date +%s)
+export MIDDLEWARE_IMAGE=taekion/taekion-fs-middleware
+docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile --target middleware -t $MIDDLEWARE_IMAGE .
+docker tag $MIDDLEWARE_IMAGE:latest $MIDDLEWARE_IMAGE:$TAG
+kind load docker-image $MIDDLEWARE_IMAGE:$TAG
+```
+
+## deploy taekion image
 
 Now we need to know the index of the middleware container.
 
@@ -136,4 +172,10 @@ Now we can update the image using that index:
 
 ```bash
 kubectl -n $NAMESPACE patch statefulset tfs-validator --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/'$CONTAINER_INDEX'/image", "value":"'"$MIDDLEWARE_IMAGE:$TAG"'"}]'
+```
+
+Then check for the rollout:
+
+```bash
+kubectl -n $NAMESPACE get po -w
 ```
