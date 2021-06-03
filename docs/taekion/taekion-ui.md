@@ -150,8 +150,8 @@ do this for each rebuild:
 cd $CODE/taekion-fs
 export TAG=$(date +%s)
 export MIDDLEWARE_IMAGE=taekion/taekion-fs-middleware
-docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile --target middleware -t $MIDDLEWARE_IMAGE .
-docker tag $MIDDLEWARE_IMAGE:latest $MIDDLEWARE_IMAGE:$TAG
+export NAMESPACE=tfs
+docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile --target middleware -t $MIDDLEWARE_IMAGE:$TAG .
 kind load docker-image $MIDDLEWARE_IMAGE:$TAG
 ```
 
