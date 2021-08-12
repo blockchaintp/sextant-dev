@@ -179,3 +179,83 @@ Then check for the rollout:
 ```bash
 kubectl -n $NAMESPACE get po -w
 ```
+
+## s3 development
+
+To build the S3 container:
+
+```bash
+cd $CODE/taekion-fs
+make docker-s3
+```
+
+Open the CLI page of the taekion deployment ane get the TFS_URL env:
+
+```bash
+export TFS_URL=XXX
+```
+
+Run the container:
+
+```bash
+function run_s3() {
+  docker run --rm --network sextant-dev_default  \
+    --name tfs-s3 \
+    -p 8001:8001 \
+    --entrypoint /usr/local/bin/tfs-s3 \
+    -e TFS_URL=$TFS_URL \
+    taekion/taekion-fs-s3:latest
+}
+run_s3
+```
+
+To rebuild:
+
+```bash
+make docker-s3 && run_s3
+```
+
+To run s3 commands:
+
+ * https://www.npmjs.com/package/minio
+ * https://docs.min.io/docs/minio-client-quickstart-guide.html
+
+To install the minion client CLI:
+
+```bash
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod a+x mc
+sudo mv mc /usr/local/bin
+# these are fake credentials but the "mc" cli requires them
+mc alias set tfs http://localhost:8001 "" ""
+```
+
+List buckets:
+
+```bash
+mc ls tfs
+```
+
+
+#### debug XML
+
+To see how the XML should actually look - we can proxy connections off to play.min.io and dump the XML on the way through.
+
+First - let's add our proxy as an alias:
+
+```bash
+mc alias set test http://localhost:5050 Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+```
+
+Then let's start the proxy:
+
+```bash
+cd $CODE/sextand-dev/docs/taekion/s3-client
+node proxy.hs
+```
+
+Now - we can run commands and see the XML on the way back through:
+
+```bash
+mc ls test
+```
