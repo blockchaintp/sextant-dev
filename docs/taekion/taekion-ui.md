@@ -150,11 +150,15 @@ do this for each rebuild:
 
 ```bash
 cd $CODE/taekion-fs
-export TAG=$(date +%s)
-export MIDDLEWARE_IMAGE=taekion/taekion-fs-middleware
-export NAMESPACE=tfs
-docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile --target middleware -t $MIDDLEWARE_IMAGE:$TAG .
-kind load docker-image $MIDDLEWARE_IMAGE:$TAG
+function rebuild_middleware() {
+  export TAG=$(date +%s)
+  export MIDDLEWARE_IMAGE=taekion/taekion-fs-middleware
+  export NAMESPACE=tfs
+  export CONTAINER_INDEX=1
+  docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile --target middleware -t $MIDDLEWARE_IMAGE:$TAG .
+  kind load docker-image $MIDDLEWARE_IMAGE:$TAG
+  kubectl -n $NAMESPACE patch statefulset tfs-tfs-tfs-on-sawtooth --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/'$CONTAINER_INDEX'/image", "value":"'"$MIDDLEWARE_IMAGE:$TAG"'"}]'
+}
 ```
 
 ## deploy taekion image
@@ -166,14 +170,14 @@ Keep changing the index in this command until we get `taekion/taekion-fs-middlew
 NOTE: there is probably a better way to update the specific container within the stateful set than manually typing indexes :-)
 
 ```bash
-kubectl -n $NAMESPACE get statefulset.apps/tfs-validator -o=jsonpath='{.spec.template.spec.containers[7].image}'
-export CONTAINER_INDEX=7
+kubectl -n $NAMESPACE get statefulset.apps/tfs-tfs-tfs-on-sawtooth -o=jsonpath='{.spec.template.spec.containers[1].image}'
+export CONTAINER_INDEX=1
 ```
 
 Now we can update the image using that index:
 
 ```bash
-kubectl -n $NAMESPACE patch statefulset tfs-validator --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/'$CONTAINER_INDEX'/image", "value":"'"$MIDDLEWARE_IMAGE:$TAG"'"}]'
+kubectl -n $NAMESPACE patch statefulset tfs-tfs-tfs-on-sawtooth --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/'$CONTAINER_INDEX'/image", "value":"'"$MIDDLEWARE_IMAGE:$TAG"'"}]'
 ```
 
 Then check for the rollout:
@@ -205,7 +209,7 @@ function run_s3() {
     --name tfs-s3 \
     -p 8001:8001 \
     --entrypoint /usr/local/bin/tfs-s3 \
-    -e TFS_URL=$TFS_URL \
+    -e TFS_URL \
     taekion/taekion-fs-s3:latest
 }
 run_s3

@@ -1,0 +1,39 @@
+version: '3'
+networks:
+  default:
+    external: true
+    name: sextant-dev_default
+services:
+  taekion:
+    build: 
+      context: .
+    privileged: true
+    init: true
+    entrypoint: bash -c 'mkdir -p /home/user/tfs_mount/volume && tfs-fuse -v $VOLUME_NAME -m /home/user/tfs_mount/volume && tail -f /dev/null'
+    devices:
+      - "/dev/fuse"
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      - TFS_URL
+      - VOLUME_NAME
+    volumes:
+      - type: bind
+        source: /tmp/tfs_mount_2
+        target: /home/user/tfs_mount
+        bind:
+          propagation: rshared
+  app:
+    image: ubuntu
+    entrypoint: bash -c 'tail -f /dev/null'
+    depends_on: 
+      - taekion
+    privileged: true
+    devices:
+      - "/dev/fuse"
+    volumes:
+      - type: bind
+        source: /tmp/tfs_mount_2
+        target: /var/lib/data
+        bind:
+          propagation: rshared
