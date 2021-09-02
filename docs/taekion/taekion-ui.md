@@ -64,8 +64,10 @@ cd $CODE/taekion-fs
 make docker-tp
 make docker-middleware
 make docker-client
-kind load docker-image taekion/taekion-fs-tp:latest
-kind load docker-image taekion/taekion-fs-middleware:latest
+docker tag taekion/taekion-fs-tp:latest taekion/taekion-fs-tp:v0.6.0
+docker tag taekion/taekion-fs-middleware:latest taekion/taekion-fs-middleware:v0.6.0
+kind load docker-image taekion/taekion-fs-tp:v0.6.0
+kind load docker-image taekion/taekion-fs-middleware:v0.6.0
 ```
 
 ## preload other images
@@ -258,4 +260,19 @@ Now - we can run commands and see the XML on the way back through:
 
 ```bash
 mc ls test
+```
+
+#### quick s3 iteration
+
+```bash
+cd $CODE/taekion-fs
+docker build -f docker/Dockerfile --target client-base -t taekion/client-base:quick .
+docker build -f docker/Dockerfile --target build -t taekion/build:quick .
+```
+
+do this for each rebuild:
+
+```bash
+cd $CODE/taekion-fs
+docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile.s3 --target s3 -t taekion/taekion-fs-s3:latest .
 ```

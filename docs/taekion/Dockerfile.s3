@@ -1,0 +1,13 @@
+FROM taekion/build:quick as build
+
+COPY ./s3 /go/src/github.com/taekion-org/taekion-fs/s3
+WORKDIR /go/src/github.com/taekion-org/taekion-fs
+RUN make s3
+
+FROM taekion/client-base:quick as s3
+
+COPY --from=build /go/src/github.com/taekion-org/taekion-fs/build/tfs-s3 /usr/local/bin/tfs-s3
+RUN chown tfs:tfs /usr/local/bin/tfs-s3
+RUN chmod ug+s /usr/local/bin/tfs-s3
+
+USER user
