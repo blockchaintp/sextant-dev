@@ -9,7 +9,7 @@ services:
       context: .
     privileged: true
     init: true
-    entrypoint: bash -c 'mkdir -p /home/user/tfs_mount/volume && tfs-fuse --allow-other -v $VOLUME_NAME -m /home/user/tfs_mount/volume && tail -f /dev/null'
+    entrypoint: bash -c 'mkdir -p /home/user/tfs_mount/data && tfs-fuse --allow-other -v $VOLUME_NAME -m /home/user/tfs_mount/data && tail -f /dev/null'
     devices:
       - "/dev/fuse"
     cap_add:
@@ -28,5 +28,9 @@ services:
     entrypoint: bash -c 'tail -f /dev/null'
     depends_on: 
       - taekion
-    volumes_from:
-      - taekion
+    volumes:
+      - type: bind
+        source: /tmp/tfs_mount
+        target: /var/lib/tfs
+        bind:
+          propagation: rshared

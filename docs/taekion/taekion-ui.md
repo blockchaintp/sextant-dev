@@ -210,6 +210,7 @@ function run_s3() {
     -p 8001:8001 \
     --entrypoint /usr/local/bin/tfs-s3 \
     -e TFS_URL \
+    -e TFS_TRACE="1" \
     taekion/taekion-fs-s3:latest
 }
 run_s3
@@ -279,4 +280,26 @@ do this for each rebuild:
 ```bash
 cd $CODE/taekion-fs
 docker build -f $CODE/sextant-dev/docs/taekion/Dockerfile.s3 --target s3 -t taekion/taekion-fs-s3:latest .
+```
+
+#### mount tfs volume into docker-compose stack
+
+Make sure you have `TFS_URL` exported in your environment.
+
+Make sure you have `VOLUME_NAME=test` exported in your environment.
+
+```bash
+cd $CODE/sextant-dev/docs/taekion/docker-compose-example
+mkdir -p /tmp/tfs_mount
+docker-compose build
+docker-compose up -d
+docker-compose exec taekion ls -la /home/user/tfs_mount/data
+docker-compose exec app ls -la /var/lib/tfs/data
+docker-compose exec app bash -c 'echo hello > /var/lib/tfs/data/otherapp.txt'
+```
+
+To cleanup:
+
+```bash
+docker-compose stop && docker-compose rm -f && sudo umount /tmp/tfs_mount/data
 ```
