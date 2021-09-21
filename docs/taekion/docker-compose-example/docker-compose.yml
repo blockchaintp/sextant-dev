@@ -19,7 +19,7 @@ services:
       - VOLUME_NAME
     volumes:
       - type: bind
-        source: /tmp/tfs_mount
+        source: /tfs_mount
         target: /home/user/tfs_mount
         bind:
           propagation: rshared
@@ -30,7 +30,7 @@ services:
       - taekion
     volumes:
       - type: bind
-        source: /tmp/tfs_mount
+        source: /tfs_mount
         target: /var/lib/tfs
         bind:
           propagation: rshared
