@@ -29,3 +29,8 @@ psql:t
 .PHONY: database.migrate
 database.migrate:
 	docker-compose exec api npm run knex -- migrate:latest
+
+.PHONY: clean
+clean:
+	docker-compose down -v
+	docker-compose rm -f

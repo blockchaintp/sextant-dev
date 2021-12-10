@@ -60,8 +60,11 @@ services:
       - POSTGRES_PASSWORD=postgres
       - SESSION_SECRET=sextant
       - TOKEN_SECRET=sextant
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
       - LOGGING=1
     volumes:
+      - ../sextant-api/node_modules:/app/api/node_modules
       - ../sextant-api/src:/app/api/src
       - ../sextant-api/test:/app/api/test
       - ../sextant-api/migrations:/app/api/migrations
