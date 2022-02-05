@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Bump shelljs from 0.8.3 to 0.8.5 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/d8350d97e8bb829a6dd824ab5d31f83451d3e876)
 * docs(readme): remove unnecessary horizontal rules [view commit](https://github.com/catenasys/sextant-dev/commit/01572c854b850dbb497a62cacd746b090c96512e)
 * docs(readme): reformat to pass checks and update readme [view commit](https://github.com/catenasys/sextant-dev/commit/38d19009958a2f903a992997aabd1dbce069d653)
 * build(pre-commit): add pre-commit config file [view commit](https://github.com/catenasys/sextant-dev/commit/9609f3594867677b69f66dd8c9317693c62f490a)
