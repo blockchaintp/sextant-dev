@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Bump y18n from 3.2.1 to 3.2.2 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/c754328af174d545d0b780fe09fbd6a54dc282e3)
+* Bump path-parse from 1.0.6 to 1.0.7 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/025b0a6a0ba0c51feeffe73f39bc5bb6151372f1)
 * Bump shelljs from 0.8.3 to 0.8.5 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/d8350d97e8bb829a6dd824ab5d31f83451d3e876)
 * docs(readme): remove unnecessary horizontal rules [view commit](https://github.com/catenasys/sextant-dev/commit/01572c854b850dbb497a62cacd746b090c96512e)
 * docs(readme): reformat to pass checks and update readme [view commit](https://github.com/catenasys/sextant-dev/commit/38d19009958a2f903a992997aabd1dbce069d653)
