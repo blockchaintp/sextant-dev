@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Bump minimist from 1.2.0 to 1.2.7 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/420ecdea918368201d0d57c4f641a8755279c2d3)
+* Bump grpc and @digitalasset/daml-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/1fab2923288678c21da5a4867db5df46f3a1ec00)
 * Bump minimatch from 3.0.4 to 3.1.2 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/ad2a96e0f75952ae8804cf04e1dd6c360cc86d86)
 * Bump y18n from 3.2.1 to 3.2.2 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/c754328af174d545d0b780fe09fbd6a54dc282e3)
 * Bump path-parse from 1.0.6 to 1.0.7 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/025b0a6a0ba0c51feeffe73f39bc5bb6151372f1)
