@@ -18,6 +18,10 @@ frontend.run:
 api.cli:
 	docker-compose exec api bash
 
+.PHONY: api.ts.cli
+api.ts.cli:
+	docker-compose exec api-ts bash
+
 .PHONY: api.run
 api.run:
 	docker-compose exec api npm run serve

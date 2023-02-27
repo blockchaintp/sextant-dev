@@ -62,7 +62,28 @@ services:
       - TOKEN_SECRET=sextant
       - LOGGING=1
     volumes:
-      - ../sextant-api/src:/app/api/src
+      - ../sextant-api/dist:/app/api/dist
       - ../sextant-api/test:/app/api/test
       - ../sextant-api/migrations:/app/api/migrations
+      - ../sextant-api/editions/dev.js:/app/api/dist/src/edition.js
+  api-ts:
+    build:
+      context: ../sextant-api
+      dockerfile: Dockerfile
+      args:
+        METERING_MODULE: aws_sfs.js
+    entrypoint: bash -c 'if [ -n "$MANUALRUN" ]; then tail -f /dev/null; else npm run serve; fi'
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=development
+      - MANUALRUN
+      - POSTGRES_SERVICE_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - SESSION_SECRET=sextant
+      - TOKEN_SECRET=sextant
+      - LOGGING=1
+    volumes:
       - ../sextant-api/editions/dev.js:/app/api/src/edition.js
