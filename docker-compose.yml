@@ -62,7 +62,4 @@ services:
       - TOKEN_SECRET=sextant
       - LOGGING=1
     volumes:
-      - ../sextant-api/src:/app/api/src
-      - ../sextant-api/test:/app/api/test
-      - ../sextant-api/migrations:/app/api/migrations
       - ../sextant-api/editions/dev.js:/app/api/src/edition.js
