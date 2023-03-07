@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* build(makefile): remove JS make api make commands and build instructions [view commit](https://github.com/catenasys/sextant-dev/commit/84746802770f33bc839b5ed2d7cb7e8281ce1694)
+* build(docker-compose): enable javascript to be run from dist directory inside a container [view commit](https://github.com/catenasys/sextant-dev/commit/32070776a650b134d86f5510ab31a650a8414e6a)
 * Bump minimist from 1.2.0 to 1.2.7 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/420ecdea918368201d0d57c4f641a8755279c2d3)
 * Bump grpc and @digitalasset/daml-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/1fab2923288678c21da5a4867db5df46f3a1ec00)
 * Bump minimatch from 3.0.4 to 3.1.2 in /daml-node-grpc-smoke/node-ledger [view commit](https://github.com/catenasys/sextant-dev/commit/ad2a96e0f75952ae8804cf04e1dd6c360cc86d86)
