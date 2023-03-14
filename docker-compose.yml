@@ -61,5 +61,3 @@ services:
       - SESSION_SECRET=sextant
       - TOKEN_SECRET=sextant
       - LOGGING=1
-    volumes:
-      - ../sextant-api/editions/dev.js:/app/api/src/edition.js
