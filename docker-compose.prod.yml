@@ -27,7 +27,7 @@ services:
     networks:
      - sextant
   postgres:
-    image: postgres:9.6.1
+    image: postgres:11
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
