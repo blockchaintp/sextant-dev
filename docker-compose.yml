@@ -18,7 +18,7 @@ services:
       - NOXY_PROXY_FRONT=/proxy
       - NOXY_PROXY_HOST=api
   postgres:
-    image: postgres:9.6.1
+    image: postgres:11
     ports:
       - 5432:5432
     volumes:
