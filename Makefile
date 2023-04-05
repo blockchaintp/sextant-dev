@@ -23,9 +23,16 @@ api.run:
 	docker-compose exec api npm run serve
 
 .PHONY: psql
-psql:t
+psql:
 	docker-compose exec postgres psql --user postgres
 
 .PHONY: database.migrate
 database.migrate:
 	docker-compose exec api npm run knex -- migrate:latest
+
+.PHONY: rebuild.api
+rebuild.api:
+	docker-compose down
+	docker rmi sextant-dev-api || true
+	docker-compose up -d
+	docker-compose exec api bash
