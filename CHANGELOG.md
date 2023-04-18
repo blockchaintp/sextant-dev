@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* feat(makefile): add rebuild.api [view commit](https://github.com/catenasys/sextant-dev/commit/9da857d36a4b2b7e7d0e51d0cbc1d99cec187b0d)
 * feat(postgres): update version to match current sextant helm chart [view commit](https://github.com/catenasys/sextant-dev/commit/a40958eac41c513e5120bf515d4bbb3ceda205b1)
 * fix(docker-compose): mounted files should not be js files [view commit](https://github.com/catenasys/sextant-dev/commit/7992dc6f40dad1ae86d26fb9d95beb0b3b482f21)
 * build(makefile): remove JS make api make commands and build instructions [view commit](https://github.com/catenasys/sextant-dev/commit/84746802770f33bc839b5ed2d7cb7e8281ce1694)
