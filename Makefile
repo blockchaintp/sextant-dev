@@ -32,7 +32,17 @@ database.migrate:
 
 .PHONY: rebuild.api
 rebuild.api:
-	docker-compose down
-	docker rmi sextant-dev-api || true
+	docker-compose stop api || true
+	docker-compose rm -f api || true
+	docker rmi -f sextant-dev-api || true
 	docker-compose up -d
 	docker-compose exec api bash
+
+
+.PHONY: rebuild.frontend
+rebuild.frontend:
+	docker-compose stop frontend || true
+	docker-compose rm -f frontend || true
+	docker rmi -f sextant-dev-frontend || true
+	docker-compose up -d
+	docker-compose exec frontend bash
